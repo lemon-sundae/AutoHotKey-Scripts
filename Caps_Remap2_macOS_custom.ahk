@@ -1,9 +1,10 @@
-﻿#Requires AutoHotkey v2.0
+#Requires AutoHotkey v2.0
 #SingleInstance Force
 
 ; Run in the background
 Persistent
 
+currentLang := 1
 global isCapsPressed := false
 
 CapsLock::
@@ -17,11 +18,21 @@ CapsLock::
             {
                 SetCapsLockState "Off"
             }
-            ; Switch IME with Win+Space when CapsLock is off
+            ; Switch IME when CapsLock is off
             else
             {
-                ; 
-                Send "#{Space}"
+                Global currentLang
+                if (currentLang = 1)
+                {
+                    ; Switch to CN
+                    Send "!+{1}"
+                    currentLang := 2
+                }
+                else
+                {
+                    Send "!+{2}"
+                    currentLang := 1
+                }
             }
         }
         global isCapsPressed := false
