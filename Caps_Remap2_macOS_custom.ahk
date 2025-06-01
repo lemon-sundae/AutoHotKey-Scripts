@@ -4,47 +4,42 @@
 ; Run in the background
 Persistent
 
-currentLang := 1
-global isCapsPressed := false
+Send "!+{1}"
+CurrentLang := 1
+SetCapsLockState "Off"
+CapsState := false
 
 CapsLock::
 {
-    if (KeyWait("CapsLock", "T0.5"))
+    if (KeyWait("CapsLock", "T0.5"))&&!WinActive("Parsec")
     {
-        if(!isCapsPressed)
+        if(CapsState)
+        ; If CapsLock is on, turn off without IME switch
         {
-            ; If CapsLock is on, turn off without IME switch
-            if GetKeyState("CapsLock", "T")
+            SetCapsLockState "Off"
+            global CapsState := false
+        }
+        else
+        ; Switch IME when CapsLock is off
+        {
+            global CurrentLang
+            if (CurrentLang = 1)
             {
-                SetCapsLockState "Off"
+                Send "!+{2}"
+                CurrentLang := 2
             }
-            ; Switch IME when CapsLock is off
             else
             {
-                Global currentLang
-                if (currentLang = 1)
-                {
-                    ; Switch to CN
-                    Send "!+{1}"
-                    currentLang := 2
-                }
-                else
-                {
-                    Send "!+{2}"
-                    currentLang := 1
-                }
+                Send "!+{1}"
+                CurrentLang := 1
             }
         }
-        global isCapsPressed := false
     }
 
-    ; Switch CapsLock state when pressed for over 0.5s
+    ; Switch CapsLock state when pressed for over 0.5s or when Parsec is active
     else
     {
-        if(!isCapsPressed)
-        {
-            global isCapsPressed := true
-            SetCapsLockState !GetKeyState("CapsLock", "T")
-        }
+        SetCapsLockState !CapsState
+        global CapsState := !CapsState
     }
 }
