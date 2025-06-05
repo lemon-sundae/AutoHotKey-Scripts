@@ -25,15 +25,15 @@ CapsLock::
             ; Switch IME when CapsLock is off
             {
                 global CurrentLang
-                if CurrentLang == 1
-                {
-                    Send "!+{2}"
-                    CurrentLang := 2
-                }
-                else
+                if CurrentLang == 2
                 {
                     Send "!+{1}"
                     CurrentLang := 1
+                }
+                else
+                {
+                    Send "!+{2}"
+                    CurrentLang := 2
                 }
             }
         }
