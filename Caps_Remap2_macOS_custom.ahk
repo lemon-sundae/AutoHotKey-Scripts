@@ -1,5 +1,6 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
+#NoTrayIcon
 
 ; Run in the background
 Persistent
@@ -9,37 +10,43 @@ CurrentLang := 1
 SetCapsLockState "Off"
 CapsState := false
 
+
 CapsLock::
 {
-    if (KeyWait("CapsLock", "T0.5"))&&!WinActive("Parsec")
+    if KeyWait("CapsLock", "T0.5")&&!WinActive("Parsec")
     {
-        if(CapsState)
-        ; If CapsLock is on, turn off without IME switch
+        if !CapsState
         {
-            SetCapsLockState "Off"
-            global CapsState := false
-        }
-        else
-        ; Switch IME when CapsLock is off
-        {
-            global CurrentLang
-            if (CurrentLang = 1)
+            if GetKeyState("CapsLock", "T")
             {
-                Send "!+{2}"
-                CurrentLang := 2
+                SetCapsLockState "Off"
             }
             else
+            ; Switch IME when CapsLock is off
             {
-                Send "!+{1}"
-                CurrentLang := 1
+                global CurrentLang
+                if CurrentLang == 1
+                {
+                    Send "!+{2}"
+                    CurrentLang := 2
+                }
+                else
+                {
+                    Send "!+{1}"
+                    CurrentLang := 1
+                }
             }
         }
+        global CapsState := false
     }
 
     ; Switch CapsLock state when pressed for over 0.5s or when Parsec is active
     else
     {
-        SetCapsLockState !CapsState
-        global CapsState := !CapsState
+        if(!CapsState)
+        {
+            global CapsState := true
+            SetCapsLockState !GetKeyState("CapsLock", "T")
+        }
     }
 }
