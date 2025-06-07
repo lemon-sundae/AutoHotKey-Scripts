@@ -50,3 +50,10 @@ CapsLock::
         }
     }
 }
+
+~^Space::
+{
+    Sleep 100
+    global CurrentLang := 2
+    Send "!+{2}"
+}
