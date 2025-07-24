@@ -1,57 +1,31 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 #NoTrayIcon
-
-; Run in the background
 Persistent
 
 Send "!+{1}"
 CurrentLang := 1
-SetCapsLockState "Off"
 CapsState := false
 
-
-CapsLock::
+; CapsLock remapped to RWin on keyboard
+RWin::
 {
-    if KeyWait("CapsLock", "T0.5")&&!WinActive("Parsec")
+    global CapsState := false
+    SetCapsLockState 0
+    global CurrentLang
+    if CurrentLang == 1
     {
-        if !CapsState
-        {
-            if GetKeyState("CapsLock", "T")
-            {
-                SetCapsLockState "Off"
-            }
-            else
-            ; Switch IME when CapsLock is off
-            {
-                global CurrentLang
-                if CurrentLang == 2
-                {
-                    Send "!+{1}"
-                    CurrentLang := 1
-                }
-                else
-                {
-                    Send "!+{2}"
-                    CurrentLang := 2
-                }
-            }
-        }
-        global CapsState := false
+        Send "!+{2}"        ;Alt+Shift+2 ENG
+        CurrentLang := 2
     }
-
-    ; Switch CapsLock state when pressed for over 0.5s or when Parsec is active
     else
     {
-        if(!CapsState)
-        {
-            global CapsState := true
-            SetCapsLockState !GetKeyState("CapsLock", "T")
-        }
+        Send "!+{1}"        ;Alt+Shift+1 Pinyin
+        CurrentLang := 1
     }
 }
 
-~^Space::
+~^Space::       ;Switch to ENG when Ctrl+Space
 {
     Sleep 100
     global CurrentLang := 2
