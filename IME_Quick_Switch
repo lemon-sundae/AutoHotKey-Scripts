@@ -6,11 +6,11 @@ Persistent true
 This script is mainly used to swiftly switch between different keyboard layouts, mostly reproducing the experience on Mainland China versions of MacBook and Magic Keyboards.
 */
 HOTKEY_MODIFIER := "!+" ; Hotkeys for certain keyboard should be set in Windows Settings.
-EN := "0"               ; For simplicity,
-SC := "1"               ; use the identical modifiers for all keyboard layouts;
-JP := "2"               ; the value assigned here == the corresponding ORDER == corresponding KEY.
-TC := "3"
-KEYBOARD_COUNT := 4
+SC := "0"               ; For simplicity,
+JP := "1"               ; use the identical modifiers for all keyboard layouts;
+EN := "2"               ; the value assigned here == the corresponding ORDER == corresponding KEY.
+
+KEYBOARD_COUNT := 3
 
 SetCapsLockState false
 isCapsHeld := false
@@ -57,6 +57,7 @@ RWin:: ;CapsLock key reallocated to RWin in keyboard driver to avoid strange beh
     SendInput "#{Space}" ; Keep the original function of "Win(hold)+Space"
     CurrentLang := Mod(CurrentLang + 1, KEYBOARD_COUNT) ; Update "CurrentLang" when keyboard switch with "Win(hold)+Space" detected
     if (CurrentLang == JP) {
-        SendInput "^{`}" ; Switch to hiragana input
+        Sleep 600
+        SendInput "^{CapsLock}" ; Switch to hiragana input
     }
 }
